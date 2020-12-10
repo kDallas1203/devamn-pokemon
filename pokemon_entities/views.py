@@ -81,21 +81,22 @@ def show_pokemon(request, pokemon_id):
 
     pokemon_dict = map_pokemon_for_view(pokemon, pokemon_entity)
 
-    if pokemon.previous_evolution is not None:
-        previous_evolution = pokemon.previous_evolution
+    next_evolution = pokemon.get_next_evolution()
+
+    if next_evolution is not None:
+        pokemon_dict['next_evolution'] = {
+            "title_ru": next_evolution.title,
+            "pokemon_id": next_evolution.id,
+            "img_url": next_evolution.image.url
+        }
+
+    previous_evolution = pokemon.previous_evolution
+
+    if previous_evolution is not None:
         pokemon_dict['previous_evolution'] = {
             "title_ru": previous_evolution.title,
             "pokemon_id": previous_evolution.id,
             "img_url": previous_evolution.image.url
-        }
-
-    pokemon_next_evolution = pokemon.next_evolution.all().first()
-
-    if pokemon_next_evolution is not None:
-        pokemon_dict['next_evolution'] = {
-            "title_ru": pokemon_next_evolution.title,
-            "pokemon_id": pokemon_next_evolution.id,
-            "img_url": pokemon_next_evolution.image.url
         }
 
     return render(request, "pokemon.html", context={'map': folium_map._repr_html_(),

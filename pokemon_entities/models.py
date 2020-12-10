@@ -1,6 +1,15 @@
 from django.db import models
 
 
+class PokemonElementType(models.Model):
+    """Стихии"""
+    title = models.CharField(max_length=100, verbose_name="Название")
+    strong_against = models.ManyToManyField('self', symmetrical=False, blank=True, verbose_name="Силен против")
+
+    def __str__(self):
+        return self.title
+
+
 class Pokemon(models.Model):
     """Покемон"""
     title = models.CharField(verbose_name='Название на русском', max_length=200)
@@ -15,10 +24,14 @@ class Pokemon(models.Model):
     description = models.TextField(verbose_name='Описание', blank=True, null=True)
     previous_evolution = models.ForeignKey('self', null=True, blank=True, related_name='next_evolution',
                                            on_delete=models.CASCADE,
-                                           verbose_name="Предыдущая эволюция")
+                                           verbose_name="Из кого эволюционирует")
+    element_type = models.ManyToManyField(PokemonElementType, verbose_name="Стихии", blank=True)
 
     def get_entities(self):
         return PokemonEntity.objects.filter(pokemon=self)
+
+    def get_next_evolution(self):
+        return self.next_evolution.all().first()
 
     def __str__(self):
         return self.title
