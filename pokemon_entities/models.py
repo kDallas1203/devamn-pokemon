@@ -13,17 +13,17 @@ class PokemonElementType(models.Model):
 class Pokemon(models.Model):
     """Покемон"""
     title = models.CharField(verbose_name='Название на русском', max_length=200)
-    title_en = models.CharField(verbose_name='Название на английском', max_length=200, blank=True, null=True)
-    title_jp = models.CharField(verbose_name='Название на японском', max_length=200, blank=True, null=True)
+    title_en = models.CharField(verbose_name='Название на английском', max_length=200, blank=True)
+    title_jp = models.CharField(verbose_name='Название на японском', max_length=200, blank=True)
     image = models.ImageField(verbose_name='Изображение', upload_to='images')
     level = models.IntegerField(verbose_name='Уровень', blank=True, null=True)
     health = models.IntegerField(verbose_name='Здоровье', blank=True, null=True)
     strength = models.IntegerField(verbose_name='Сила', blank=True, null=True)
     defence = models.IntegerField(verbose_name='Защита', blank=True, null=True)
     stamina = models.IntegerField(verbose_name='Выносливость', blank=True, null=True)
-    description = models.TextField(verbose_name='Описание', blank=True, null=True)
+    description = models.TextField(verbose_name='Описание', blank=True)
     previous_evolution = models.ForeignKey('self', null=True, blank=True, related_name='next_evolution',
-                                           on_delete=models.CASCADE,
+                                           on_delete=models.SET_NULL,
                                            verbose_name="Из кого эволюционирует")
     element_type = models.ManyToManyField(PokemonElementType, verbose_name="Стихии", blank=True)
 
@@ -43,4 +43,4 @@ class PokemonEntity(models.Model):
     lon = models.FloatField(verbose_name='Долгота', blank=True, null=True)
     appeared_at = models.DateTimeField(verbose_name='Дата и время появления', blank=True, null=True)
     disappeared_at = models.DateTimeField(verbose_name='Дата и время исчезновения', blank=True, null=True)
-    pokemon = models.ForeignKey(Pokemon, on_delete=models.CASCADE, verbose_name="Покемон", blank=True, null=True)
+    pokemon = models.ForeignKey(Pokemon, on_delete=models.SET_NULL, verbose_name="Покемон", blank=True, null=True)
