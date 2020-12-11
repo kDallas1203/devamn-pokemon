@@ -21,7 +21,7 @@ def add_pokemon(folium_map, lat, lon, name, image_url=DEFAULT_IMAGE_URL):
 
 
 def map_pokemon_for_view(pokemon, entities):
-    pokemon_dict = {
+    mapped_pokemon = {
         'pokemon_id': pokemon.id,
         'title_ru': pokemon.title,
         'title_en': pokemon.title_en,
@@ -32,13 +32,13 @@ def map_pokemon_for_view(pokemon, entities):
     }
 
     for entity in entities:
-        pokemon_dict['entities'].append({
+        mapped_pokemon['entities'].append({
             'level': pokemon.level,
             'lat': entity.lat,
             'lon': entity.lon
         })
 
-    return pokemon_dict
+    return mapped_pokemon
 
 
 def show_all_pokemons(request):
@@ -79,12 +79,12 @@ def show_pokemon(request, pokemon_id):
         add_pokemon(folium_map, entity.lat, entity.lon, pokemon.title,
                     request.build_absolute_uri(pokemon.image.url))
 
-    pokemon_dict = map_pokemon_for_view(pokemon, pokemon_entity)
+    mapped_pokemon = map_pokemon_for_view(pokemon, pokemon_entity)
 
     next_evolution = pokemon.get_next_evolution()
 
     if next_evolution is not None:
-        pokemon_dict['next_evolution'] = {
+        mapped_pokemon['next_evolution'] = {
             "title_ru": next_evolution.title,
             "pokemon_id": next_evolution.id,
             "img_url": next_evolution.image.url
@@ -93,11 +93,11 @@ def show_pokemon(request, pokemon_id):
     previous_evolution = pokemon.previous_evolution
 
     if previous_evolution is not None:
-        pokemon_dict['previous_evolution'] = {
+        mapped_pokemon['previous_evolution'] = {
             "title_ru": previous_evolution.title,
             "pokemon_id": previous_evolution.id,
             "img_url": previous_evolution.image.url
         }
 
     return render(request, "pokemon.html", context={'map': folium_map._repr_html_(),
-                                                    'pokemon': pokemon_dict})
+                                                    'pokemon': mapped_pokemon})
