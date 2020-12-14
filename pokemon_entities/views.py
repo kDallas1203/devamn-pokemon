@@ -67,10 +67,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    try:
-        pokemon = get_object_or_404(Pokemon, pk=pokemon_id)
-    except:
-        return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
+    pokemon = get_object_or_404(Pokemon, pk=pokemon_id)
         
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     pokemon_entity = pokemon.get_entities()
